@@ -127,6 +127,7 @@ class CasinoGame:
             pygame.display.update()
 
 
+
 if __name__ == "__main__":
     game = CasinoGame()
     game.game_loop()
