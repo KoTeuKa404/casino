@@ -13,7 +13,7 @@ BLUE = (0, 0, 255)
 GREEN = (0, 128, 0)
 BLACK = (0, 0, 0)
 
-SCREEN_WIDTH, SCREEN_HEIGHT = 1000, 600
+SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 700
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
 pygame.display.set_caption("Poker Game 1-on-1")
 
@@ -31,6 +31,10 @@ community_cards = []
 hands = {}
 game_phase = 'pre-flop'
 winner_text = ""
+small_blind = 50
+big_blind = 100
+bet_phase = "initial"
+raise_amount = 100  # Сума підвищення ставки
 
 card_images = {}
 for suit in SUITS:
@@ -42,7 +46,7 @@ card_back_image = pygame.image.load("img/card/back.png")
 music_folder = "music/radio" 
 music_files = [os.path.join(music_folder, file) for file in os.listdir(music_folder) if file.endswith(".ogg")]
 
-def play_random_music():
+def play_random_music(volume=0.5):
     if music_files:
         random_music = random.choice(music_files)
         pygame.mixer.music.load(random_music)
@@ -100,7 +104,7 @@ def determine_winner(player_hand, ai_hand, community_cards):
         return "It's a Draw!"
 
 def poker_game():
-    global player_chips, ai_chips, pot, current_bet, community_cards, hands, game_phase, SCREEN_WIDTH, SCREEN_HEIGHT, screen, winner_text
+    global player_chips, ai_chips, pot, current_bet, community_cards, hands, game_phase, SCREEN_WIDTH, SCREEN_HEIGHT, screen, winner_text, bet_phase, raise_amount
 
     deck = create_deck()
     hands = deal_cards(deck)
@@ -109,6 +113,7 @@ def poker_game():
 
     running = True
     num_community_cards = 0
+    call_phase = False  # Додаємо фазу Call для контролю ставок без відкриття карт
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -123,29 +128,34 @@ def poker_game():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
 
+                # Bet
                 if 50 <= mouse_x <= 200 and SCREEN_HEIGHT - 100 <= mouse_y <= SCREEN_HEIGHT - 50:
-                    if player_chips >= 100:
-                        current_bet = 100
+                    if player_chips >= big_blind and bet_phase == "initial":
+                        current_bet = big_blind
                         player_chips -= current_bet
                         pot += current_bet
-                        num_community_cards = 3 
+                        bet_phase = "flop"
+                        num_community_cards = 3  
+                        call_phase = False  # Після ставки call неактивний
 
+                # Call (просто збільшення поту)
                 elif 250 <= mouse_x <= 400 and SCREEN_HEIGHT - 100 <= mouse_y <= SCREEN_HEIGHT - 50:
                     if player_chips >= current_bet:
                         player_chips -= current_bet
                         pot += current_bet
-                        num_community_cards += 1 
-                        if num_community_cards == 5:
-                            showdown = True 
+                        call_phase = True
 
+                # Raise (підвищує ставку і відкриває наступну карту)
                 elif 450 <= mouse_x <= 600 and SCREEN_HEIGHT - 100 <= mouse_y <= SCREEN_HEIGHT - 50:
-                    if player_chips >= current_bet + 200:
-                        current_bet += 200
-                        player_chips -= current_bet
-                        pot += current_bet
-                        num_community_cards = 5  
-                        showdown = True
+                    if player_chips >= current_bet + raise_amount:
+                        pot += raise_amount
+                        call_phase = False
+                        if num_community_cards < 5:
+                            num_community_cards += 1  
+                        if num_community_cards == 5:
+                            showdown = True
 
+                # Fold
                 elif 650 <= mouse_x <= 800 and SCREEN_HEIGHT - 100 <= mouse_y <= SCREEN_HEIGHT - 50:
                     ai_chips += pot 
                     pot = 0
@@ -155,6 +165,8 @@ def poker_game():
                     current_bet = 0
                     num_community_cards = 0
                     showdown = False
+                    bet_phase = "initial"
+                    call_phase = False
 
         screen.fill(GREEN)
         draw_player_hands(hands)
@@ -164,10 +176,18 @@ def poker_game():
             draw_ai_hands(hands['AI'], reveal=True)  
             winner_text = determine_winner(hands['Player'], hands['AI'], community_cards)
             print(winner_text)
+
             if winner_text == "Player Wins!":
-                player_chips += pot
+                player_chips += pot  # Гравець забирає всі чипи з поту
+                ai_chips -= pot  # AI втрачає чипи з поту
             elif winner_text == "AI Wins!":
-                ai_chips += pot
+                ai_chips += pot  # AI забирає всі чипи з поту
+                player_chips -= pot  # Гравець втрачає чипи з поту
+            else:
+                # Нічия - повертаємо чипи обом гравцям
+                player_chips += pot // 2
+                ai_chips += pot // 2
+
             pot = 0
 
             text_surf = winner_font.render(winner_text, True, WHITE)
