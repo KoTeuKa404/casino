@@ -55,18 +55,14 @@ class CasinoGame:
                     pygame.quit()
                     sys.exit()
 
-                
                 if event.type == pygame.VIDEORESIZE:
                     screen_width, screen_height = event.w, event.h
                     screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
-                  
                     background = pygame.transform.scale(pygame.image.load('img/background.png'), (screen_width, screen_height))
 
-           
             screen.blit(background, (0, 0))   
             draw_text("Casino Games", font, BLACK, screen, screen_width // 2, 50)
 
-          
             pygame.draw.rect(screen, BLACK, (200 + offset, 80, 150, 150), 2)   
             pygame.draw.rect(screen, BLACK, (450 + offset, 80, 150, 150), 2)  
             pygame.draw.rect(screen, BLACK, (200 + offset, 280, 150, 150), 2)  
@@ -80,44 +76,52 @@ class CasinoGame:
             mouse = pygame.mouse.get_pos()
             click = pygame.mouse.get_pressed()
 
-            
+            # Poker game
             if 200 + offset < mouse[0] < 350 + offset and 230 < mouse[1] < 280:
                 pygame.draw.rect(screen, BLUE, (200 + offset, 230, 150, 50))
                 if click[0] == 1:
-                    self.running = False  
-                    poker.poker_game() 
+                    self.running = False
+                    screen_width, screen_height = 800, 600  # Set screen size for poker
+                    screen = pygame.display.set_mode((screen_width, screen_height))
+                    poker.poker_game()  
             else:
                 pygame.draw.rect(screen, GREEN, (200 + offset, 230, 150, 50))
 
             draw_text("Poker", font, WHITE, screen, 275 + offset, 255)
 
-          
+            # Slots game
             if 450 + offset < mouse[0] < 600 + offset and 230 < mouse[1] < 280:
                 pygame.draw.rect(screen, BLUE, (450 + offset, 230, 150, 50))
                 if click[0] == 1:
-                    self.running = False 
+                    self.running = False
+                    screen_width, screen_height = 800, 600  # Set screen size for slots
+                    screen = pygame.display.set_mode((screen_width, screen_height))
                     slots.slots_game()   
             else:
                 pygame.draw.rect(screen, GREEN, (450 + offset, 230, 150, 50))
 
             draw_text("Slots", font, WHITE, screen, 525 + offset, 255)
 
-           
+            # Tiles game
             if 200 + offset < mouse[0] < 350 + offset and 430 < mouse[1] < 480:
                 pygame.draw.rect(screen, BLUE, (200 + offset, 430, 150, 50))
                 if click[0] == 1:
-                    self.running = False  
+                    self.running = False
+                    screen_width, screen_height = 600, 600  # Set screen size for tiles
+                    screen = pygame.display.set_mode((screen_width, screen_height))
                     tiles.tiles_game()  
             else:
                 pygame.draw.rect(screen, GREEN, (200 + offset, 430, 150, 50))
 
             draw_text("Tiles", font, WHITE, screen, 275 + offset, 455)
 
-           
+            # Match-3 game
             if 450 + offset < mouse[0] < 600 + offset and 430 < mouse[1] < 480:
                 pygame.draw.rect(screen, BLUE, (450 + offset, 430, 150, 50))
                 if click[0] == 1:
-                    self.running = False  
+                    self.running = False
+                    screen_width, screen_height = 480, 480  # Set screen size for match-3
+                    screen = pygame.display.set_mode((screen_width, screen_height))
                     match_3.match_3_game()  
             else:
                 pygame.draw.rect(screen, GREEN, (450 + offset, 430, 150, 50))
@@ -127,7 +131,7 @@ class CasinoGame:
             pygame.display.update()
 
 
-
 if __name__ == "__main__":
     game = CasinoGame()
     game.game_loop()
+
