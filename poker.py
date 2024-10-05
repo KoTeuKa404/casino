@@ -13,9 +13,10 @@ BLUE = (0, 0, 255)
 GREEN = (0, 128, 0)
 BLACK = (0, 0, 0)
 
-SCREEN_WIDTH, SCREEN_HEIGHT = 1200, 700
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
-pygame.display.set_caption("Poker Game 1-on-1")
+screen_width = 1200
+screen_height = 700
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
+pygame.display.set_caption("Poker Game 1-on-AI")
 
 font = pygame.font.Font(None, 36)
 winner_font = pygame.font.Font(None, 60)
@@ -34,7 +35,7 @@ winner_text = ""
 small_blind = 50
 big_blind = 100
 bet_phase = "initial"
-raise_amount = 100  # Сума підвищення ставки
+raise_amount = 100  
 
 card_images = {}
 for suit in SUITS:
@@ -66,13 +67,13 @@ def draw_card(card, x, y):
     screen.blit(scaled_card, (x, y))
 
 def draw_community_cards(cards):
-    community_card_y = SCREEN_HEIGHT // 2 - CARD_HEIGHT // 2
+    community_card_y = screen_height // 2 - CARD_HEIGHT // 2
     for i, card in enumerate(cards):
         x_position = 450 + (CARD_WIDTH + CARD_SPACING + 20) * i
         draw_card(card, x_position, community_card_y)
 
 def draw_player_hands(hands):
-    player_hand_y = SCREEN_HEIGHT - CARD_HEIGHT - 150
+    player_hand_y = screen_height - CARD_HEIGHT - 150
     for i, card in enumerate(hands['Player']):
         x_position = 100 + (CARD_WIDTH + CARD_SPACING + 20) * i
         draw_card(card, x_position, player_hand_y)
@@ -104,7 +105,7 @@ def determine_winner(player_hand, ai_hand, community_cards):
         return "It's a Draw!"
 
 def poker_game():
-    global player_chips, ai_chips, pot, current_bet, community_cards, hands, game_phase, SCREEN_WIDTH, SCREEN_HEIGHT, screen, winner_text, bet_phase, raise_amount
+    global player_chips, ai_chips, pot, current_bet, community_cards, hands, game_phase, screen_width, screen_height, screen, winner_text, bet_phase, raise_amount
 
     deck = create_deck()
     hands = deal_cards(deck)
@@ -113,7 +114,7 @@ def poker_game():
 
     running = True
     num_community_cards = 0
-    call_phase = False  # Додаємо фазу Call для контролю ставок без відкриття карт
+    call_phase = False 
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -122,31 +123,31 @@ def poker_game():
                 sys.exit()
 
             elif event.type == pygame.VIDEORESIZE:
-                SCREEN_WIDTH, SCREEN_HEIGHT = event.size
-                screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.RESIZABLE)
+                screen_width, screen_height = event.size
+                screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = pygame.mouse.get_pos()
 
                 # Bet
-                if 50 <= mouse_x <= 200 and SCREEN_HEIGHT - 100 <= mouse_y <= SCREEN_HEIGHT - 50:
+                if 50 <= mouse_x <= 200 and screen_height - 100 <= mouse_y <= screen_height - 50:
                     if player_chips >= big_blind and bet_phase == "initial":
                         current_bet = big_blind
                         player_chips -= current_bet
                         pot += current_bet
                         bet_phase = "flop"
                         num_community_cards = 3  
-                        call_phase = False  # Після ставки call неактивний
+                        call_phase = False  
 
-                # Call (просто збільшення поту)
-                elif 250 <= mouse_x <= 400 and SCREEN_HEIGHT - 100 <= mouse_y <= SCREEN_HEIGHT - 50:
+                # Call 
+                elif 250 <= mouse_x <= 400 and screen_height - 100 <= mouse_y <= screen_height - 50:
                     if player_chips >= current_bet:
                         player_chips -= current_bet
                         pot += current_bet
                         call_phase = True
 
-                # Raise (підвищує ставку і відкриває наступну карту)
-                elif 450 <= mouse_x <= 600 and SCREEN_HEIGHT - 100 <= mouse_y <= SCREEN_HEIGHT - 50:
+                # Raise 
+                elif 450 <= mouse_x <= 600 and screen_height - 100 <= mouse_y <= screen_height - 50:
                     if player_chips >= current_bet + raise_amount:
                         pot += raise_amount
                         call_phase = False
@@ -156,7 +157,7 @@ def poker_game():
                             showdown = True
 
                 # Fold
-                elif 650 <= mouse_x <= 800 and SCREEN_HEIGHT - 100 <= mouse_y <= SCREEN_HEIGHT - 50:
+                elif 650 <= mouse_x <= 800 and screen_height - 100 <= mouse_y <= screen_height - 50:
                     ai_chips += pot 
                     pot = 0
                     deck = create_deck()
@@ -178,20 +179,19 @@ def poker_game():
             print(winner_text)
 
             if winner_text == "Player Wins!":
-                player_chips += pot  # Гравець забирає всі чипи з поту
-                ai_chips -= pot  # AI втрачає чипи з поту
+                player_chips += pot  
+                ai_chips -= pot 
             elif winner_text == "AI Wins!":
-                ai_chips += pot  # AI забирає всі чипи з поту
-                player_chips -= pot  # Гравець втрачає чипи з поту
+                ai_chips += pot  
+                player_chips -= pot  
             else:
-                # Нічия - повертаємо чипи обом гравцям
                 player_chips += pot // 2
                 ai_chips += pot // 2
 
             pot = 0
 
             text_surf = winner_font.render(winner_text, True, WHITE)
-            screen.blit(text_surf, (SCREEN_WIDTH // 2 - 120, SCREEN_HEIGHT // 2 - 180))
+            screen.blit(text_surf, (screen_width // 2 - 120, screen_height // 2 - 180))
 
             pygame.display.update()
             pygame.time.wait(3000)  
@@ -204,13 +204,13 @@ def poker_game():
         else:
             draw_ai_hands(hands['AI']) 
 
-        create_button(50, SCREEN_HEIGHT - 100, 150, 50, "Bet")
-        create_button(250, SCREEN_HEIGHT - 100, 150, 50, "Call")
-        create_button(450, SCREEN_HEIGHT - 100, 150, 50, "Raise")
-        create_button(650, SCREEN_HEIGHT - 100, 150, 50, "Fold")
+        create_button(50, screen_height - 100, 150, 50, "Bet")
+        create_button(250, screen_height - 100, 150, 50, "Call")
+        create_button(450, screen_height - 100, 150, 50, "Raise")
+        create_button(650, screen_height - 100, 150, 50, "Fold")
 
         text_surf = font.render(f"Player Chips: {player_chips}   Pot: {pot}   AI Chips: {ai_chips}", True, WHITE)
-        screen.blit(text_surf, (SCREEN_WIDTH // 2 - 300, 50))
+        screen.blit(text_surf, (screen_width // 2 - 300, 50))
 
         pygame.display.update()
 
