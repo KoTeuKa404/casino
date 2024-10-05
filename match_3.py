@@ -30,7 +30,6 @@ def create_grid():
             color = random.choice(COLORS)
             grid[row].append(color)
 
-            # Check matches while filling the grid
             if col >= 2 and grid[row][col] == grid[row][col - 1] == grid[row][col - 2]:
                 while grid[row][col] == grid[row][col - 1]:
                     grid[row][col] = random.choice(COLORS)
@@ -138,7 +137,7 @@ def match_3_game():
     grid = create_grid()
     selected_tile = None
     running = True
-    clock = pygame.time.Clock()  # Додаємо об'єкт для керування FPS
+    clock = pygame.time.Clock()  
 
     while running:
         screen.fill(BLACK)
@@ -146,7 +145,7 @@ def match_3_game():
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False  # Замість sys.exit() завершуємо цикл коректно
+                running = False 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_x, mouse_y = event.pos
                 col = mouse_x // TILE_SIZE
@@ -170,9 +169,8 @@ def match_3_game():
                     selected_tile = (row, col)
 
         pygame.display.update()
-        clock.tick(30)  # Обмежуємо частоту оновлення екрана до 30 FPS
+        clock.tick(60)  
 
-    pygame.quit()  # Закриваємо Pygame після завершення гри
-
+    pygame.quit()  
 if __name__ == "__main__":
     match_3_game()
