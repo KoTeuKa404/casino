@@ -144,7 +144,86 @@ def check_bets(closest_number):
             winning_bets.append(bet)
         elif 580 <= bet_position[0] <= 635 and 90 <= bet_position[1] <= 180 and result_color == '2':
             winning_bets.append(bet)
-        elif 580 <= bet_position[0] <= 635 and 185 <= bet_position[1] <= 400 and result_color == '1':
+        elif 580 <= bet_position[0] <= 635 and 185 <= bet_position[1] <= 265 and result_color == '1':
+            winning_bets.append(bet)            
+            
+        elif 640 <= bet_position[0] <= 695 and 0 <= bet_position[1] <= 85 and result_color == '6':
+            winning_bets.append(bet)
+        elif 640 <= bet_position[0] <= 695 and 90 <= bet_position[1] <= 180 and result_color == '5':
+            winning_bets.append(bet)
+        elif 640 <= bet_position[0] <= 695 and 185 <= bet_position[1] <= 265 and result_color == '4':
+            winning_bets.append(bet)            
+            
+        elif 700 <= bet_position[0] <= 755 and 0 <= bet_position[1] <= 85 and result_color == '9':
+            winning_bets.append(bet)
+        elif 700 <= bet_position[0] <= 755 and 90 <= bet_position[1] <= 180 and result_color == '8':
+            winning_bets.append(bet)
+        elif 700 <= bet_position[0] <= 755 and 185 <= bet_position[1] <= 265 and result_color == '7':
+            winning_bets.append(bet)        
+            
+        elif 765 <= bet_position[0] <= 815 and 0 <= bet_position[1] <= 85 and result_color == '12':
+            winning_bets.append(bet)
+        elif 765 <= bet_position[0] <= 815 and 90 <= bet_position[1] <= 180 and result_color == '11':
+            winning_bets.append(bet)
+        elif 765 <= bet_position[0] <= 815 and 185 <= bet_position[1] <= 265 and result_color == '10':
+            winning_bets.append(bet)        
+            
+        elif 830 <= bet_position[0] <= 875 and 0 <= bet_position[1] <= 85 and result_color == '15':
+            winning_bets.append(bet)
+        elif 830 <= bet_position[0] <= 875 and 90 <= bet_position[1] <= 180 and result_color == '14':
+            winning_bets.append(bet)
+        elif 830 <= bet_position[0] <= 875 and 185 <= bet_position[1] <= 265 and result_color == '13':
+            winning_bets.append(bet)        
+            
+        elif 880 <= bet_position[0] <= 935 and 0 <= bet_position[1] <= 85 and result_color == '18':
+            winning_bets.append(bet)
+        elif 880 <= bet_position[0] <= 935 and 90 <= bet_position[1] <= 180 and result_color == '17':
+            winning_bets.append(bet)
+        elif 880 <= bet_position[0] <= 935 and 185 <= bet_position[1] <= 265 and result_color == '16':
+            winning_bets.append(bet)        
+            
+            
+        elif 955 <= bet_position[0] <= 995 and 0 <= bet_position[1] <= 85 and result_color == '21':
+            winning_bets.append(bet)
+        elif 955 <= bet_position[0] <= 995 and 90 <= bet_position[1] <= 180 and result_color == '20':
+            winning_bets.append(bet)
+        elif 955 <= bet_position[0] <= 995 and 185 <= bet_position[1] <= 265 and result_color == '19':
+            winning_bets.append(bet)            
+            
+        elif 1020 <= bet_position[0] <= 1075 and 0 <= bet_position[1] <= 85 and result_color == '24':
+            winning_bets.append(bet)
+        elif 1020 <= bet_position[0] <= 1075 and 90 <= bet_position[1] <= 180 and result_color == '23':
+            winning_bets.append(bet)
+        elif 1020 <= bet_position[0] <= 1075 and 185 <= bet_position[1] <= 265 and result_color == '22':
+            winning_bets.append(bet)            
+            
+        elif 1080 <= bet_position[0] <= 1135 and 0 <= bet_position[1] <= 85 and result_color == '27':
+            winning_bets.append(bet)
+        elif 1080 <= bet_position[0] <= 1135 and 90 <= bet_position[1] <= 180 and result_color == '26':
+            winning_bets.append(bet)
+        elif 1080 <= bet_position[0] <= 1135 and 185 <= bet_position[1] <= 265 and result_color == '25':
+            winning_bets.append(bet)            
+       
+            
+        elif 1140 <= bet_position[0] <= 1200 and 0 <= bet_position[1] <= 85 and result_color == '30':
+            winning_bets.append(bet)
+        elif 1140 <= bet_position[0] <= 1200 and 90 <= bet_position[1] <= 180 and result_color == '29':
+            winning_bets.append(bet)
+        elif 1140 <= bet_position[0] <= 1200 and 185 <= bet_position[1] <= 265 and result_color == '28':
+            winning_bets.append(bet)       
+            
+        elif 1205 <= bet_position[0] <= 1260 and 0 <= bet_position[1] <= 85 and result_color == '33':
+            winning_bets.append(bet)
+        elif 1205 <= bet_position[0] <= 1260 and 90 <= bet_position[1] <= 180 and result_color == '32':
+            winning_bets.append(bet)
+        elif 1205 <= bet_position[0] <= 1260 and 185 <= bet_position[1] <= 265 and result_color == '31':
+            winning_bets.append(bet)       
+            
+        elif 1265 <= bet_position[0] <= 1325 and 0 <= bet_position[1] <= 85 and result_color == '36':
+            winning_bets.append(bet)
+        elif 1265 <= bet_position[0] <= 1325 and 90 <= bet_position[1] <= 180 and result_color == '35':
+            winning_bets.append(bet)
+        elif 1265 <= bet_position[0] <= 1325 and 185 <= bet_position[1] <= 265 and result_color == '34':
             winning_bets.append(bet)
 
     if winning_bets:
@@ -157,7 +236,7 @@ def check_bets(closest_number):
         result_message = "You lost!"
     bets.clear()
     
-blue_square_pos = (635, 185)
+blue_square_pos = (1325, 0)
 
 def update_yellow_square(result_number):
     bet_positions = {
