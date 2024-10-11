@@ -312,11 +312,12 @@ while running:
         chip_texture = pygame.transform.scale(chip_texture, (50, 50))
         screen.blit(chip_texture, bet['position'])
 
-    # Exit button
+        # Draw Exit button in the bottom-right corner
     exit_button_width, exit_button_height = 70, 40
-    exit_button_x = screen_width - exit_button_width - 10
-    exit_button_y = screen_height - exit_button_height - 10
-    pygame.draw.rect(screen, (255, 0, 0), (exit_button_x, exit_button_y, exit_button_width, exit_button_height))
+    exit_button_x = screen_width - exit_button_width - 10  # 10 pixels from the right edge
+    exit_button_y = screen_height - exit_button_height - 10  # 10 pixels from the bottom edge
+    pygame.draw.rect(screen, (255, 0, 0), (exit_button_x, exit_button_y, exit_button_width, exit_button_height))  # Red rectangle for the Exit button
+    font = pygame.font.SysFont(None, 36)
     exit_text = font.render('EXIT', True, (255, 255, 255))
     screen.blit(exit_text, (exit_button_x + 5, exit_button_y + 5))
 
