@@ -52,10 +52,8 @@ ball_distance_from_center = 160
 ball_radius = 10  # Define ball radius
 ball_stopped = False  # Flag to track if the ball has stopped
 
-# Position of the ball's rotation center
 ball_center_x, ball_center_y = circle_rect.center
 
-# Wheel numbers and color mapping
 wheel_numbers = [14, 2, 0, 28, 9, 26, 30, 11, 7, 20, 32, 17, 5, 22, 34, 15, 3, 24, 36, 13, 
                  1, '00', 27, 10, 25, 29, 12, 8, 19, 31, 18, 6, 21, 33, 16, 4, 23, 35]
 
@@ -68,11 +66,9 @@ number_colors = {
     0: 'green', '00': 'green'
 }
 
-# Game Fonts
 font = pygame.font.SysFont(None, 24)
 result_font = pygame.font.SysFont(None, 36)
 
-# Functions to handle wheel rotation and drawing numbers
 def rotate_circle(image, angle):
     rotated_image = pygame.transform.rotate(image, angle)
     new_rect = rotated_image.get_rect(center=circle_rect.center)
@@ -110,7 +106,7 @@ def handle_chip_dragging(mouse_x, mouse_y, event_type):
     elif event_type == pygame.MOUSEBUTTONUP and dragging_chip:
         if pool_rect.collidepoint(mouse_x, mouse_y):
             bets.append({'chip': dragging_chip.copy(), 'position': (mouse_x, mouse_y)})
-            player_chips.remove(dragging_chip)  # Remove chip from inventory after placing
+            player_chips.remove(dragging_chip)  
         dragging_chip['dragging'] = False
         dragging_chip = None
     elif event_type == pygame.MOUSEMOTION and dragging_chip and dragging_chip['dragging']:
@@ -119,126 +115,122 @@ def handle_chip_dragging(mouse_x, mouse_y, event_type):
 def check_bets(closest_number):
     global result_message
     winning_bets = []
-    
-    result_color = number_colors[closest_number]  # Get color of winning number
-    
+
+    result_color = number_colors[closest_number]  # Колір виграшного числа
+
     for bet in bets:
         bet_position = bet['position']
-        result_position = update_yellow_square(closest_number)
 
-        # Check if bet is on the correct number or color
-        if abs(bet_position[0] - result_position[0]) < 50 and abs(bet_position[1] - result_position[1]) < 50:
-            winning_bets.append(bet)
-        elif 830 <= bet_position[0] <= 950 and 340 <= bet_position[1] <= 400 and result_color == 'red':
+        # Перевірка, чи потрапляє ставка в область червоного чи чорного
+        if 830 <= bet_position[0] <= 950 and 340 <= bet_position[1] <= 400 and result_color == 'red':
             winning_bets.append(bet)
         elif 955 <= bet_position[0] <= 1075 and 340 <= bet_position[1] <= 400 and result_color == 'black':
             winning_bets.append(bet)
-        
-        elif 500 <= bet_position[0] <= 570 and 140 <= bet_position[1] <= 260 and result_color == '0':
+
+        # Перевірка ставок на нулі
+        elif 500 <= bet_position[0] <= 570 and 140 <= bet_position[1] <= 260 and closest_number == 0:
             winning_bets.append(bet)
-        elif 500 <= bet_position[0] <= 570 and 0 <= bet_position[1] <= 135 and result_color == '00':
+        elif 500 <= bet_position[0] <= 570 and 0 <= bet_position[1] <= 135 and closest_number == '00':
+            winning_bets.append(bet)
+
+        # Перевірка ставок на конкретні числа
+        if 580 <= bet_position[0] <= 635 and 0 <= bet_position[1] <= 85 and closest_number == 3:
+            winning_bets.append(bet)
+        elif 580 <= bet_position[0] <= 635 and 90 <= bet_position[1] <= 180 and closest_number == 2:
+            winning_bets.append(bet)
+        elif 580 <= bet_position[0] <= 635 and 185 <= bet_position[1] <= 265 and closest_number == 1:
             winning_bets.append(bet)
             
-            
-        elif 580 <= bet_position[0] <= 635 and 0 <= bet_position[1] <= 85 and result_color == '3':
+        elif 640 <= bet_position[0] <= 695 and 0 <= bet_position[1] <= 85 and closest_number == 6:
             winning_bets.append(bet)
-        elif 580 <= bet_position[0] <= 635 and 90 <= bet_position[1] <= 180 and result_color == '2':
+        elif 640 <= bet_position[0] <= 695 and 90 <= bet_position[1] <= 180 and closest_number == 5:
             winning_bets.append(bet)
-        elif 580 <= bet_position[0] <= 635 and 185 <= bet_position[1] <= 265 and result_color == '1':
-            winning_bets.append(bet)            
-            
-        elif 640 <= bet_position[0] <= 695 and 0 <= bet_position[1] <= 85 and result_color == '6':
+        elif 640 <= bet_position[0] <= 695 and 185 <= bet_position[1] <= 265 and closest_number == 4:
             winning_bets.append(bet)
-        elif 640 <= bet_position[0] <= 695 and 90 <= bet_position[1] <= 180 and result_color == '5':
+
+        elif 700 <= bet_position[0] <= 755 and 0 <= bet_position[1] <= 85 and closest_number == 9:
             winning_bets.append(bet)
-        elif 640 <= bet_position[0] <= 695 and 185 <= bet_position[1] <= 265 and result_color == '4':
-            winning_bets.append(bet)            
-            
-        elif 700 <= bet_position[0] <= 755 and 0 <= bet_position[1] <= 85 and result_color == '9':
+        elif 700 <= bet_position[0] <= 755 and 90 <= bet_position[1] <= 180 and closest_number == 8:
             winning_bets.append(bet)
-        elif 700 <= bet_position[0] <= 755 and 90 <= bet_position[1] <= 180 and result_color == '8':
+        elif 700 <= bet_position[0] <= 755 and 185 <= bet_position[1] <= 265 and closest_number == 7:
             winning_bets.append(bet)
-        elif 700 <= bet_position[0] <= 755 and 185 <= bet_position[1] <= 265 and result_color == '7':
-            winning_bets.append(bet)        
-            
-        elif 765 <= bet_position[0] <= 815 and 0 <= bet_position[1] <= 85 and result_color == '12':
+
+        elif 765 <= bet_position[0] <= 815 and 0 <= bet_position[1] <= 85 and closest_number == 12:
             winning_bets.append(bet)
-        elif 765 <= bet_position[0] <= 815 and 90 <= bet_position[1] <= 180 and result_color == '11':
+        elif 765 <= bet_position[0] <= 815 and 90 <= bet_position[1] <= 180 and closest_number == 11:
             winning_bets.append(bet)
-        elif 765 <= bet_position[0] <= 815 and 185 <= bet_position[1] <= 265 and result_color == '10':
-            winning_bets.append(bet)        
-            
-        elif 830 <= bet_position[0] <= 875 and 0 <= bet_position[1] <= 85 and result_color == '15':
+        elif 765 <= bet_position[0] <= 815 and 185 <= bet_position[1] <= 265 and closest_number == 10:
             winning_bets.append(bet)
-        elif 830 <= bet_position[0] <= 875 and 90 <= bet_position[1] <= 180 and result_color == '14':
+
+        elif 830 <= bet_position[0] <= 875 and 0 <= bet_position[1] <= 85 and closest_number == 15:
             winning_bets.append(bet)
-        elif 830 <= bet_position[0] <= 875 and 185 <= bet_position[1] <= 265 and result_color == '13':
-            winning_bets.append(bet)        
-            
-        elif 880 <= bet_position[0] <= 935 and 0 <= bet_position[1] <= 85 and result_color == '18':
+        elif 830 <= bet_position[0] <= 875 and 90 <= bet_position[1] <= 180 and closest_number == 14:
             winning_bets.append(bet)
-        elif 880 <= bet_position[0] <= 935 and 90 <= bet_position[1] <= 180 and result_color == '17':
+        elif 830 <= bet_position[0] <= 875 and 185 <= bet_position[1] <= 265 and closest_number == 13:
             winning_bets.append(bet)
-        elif 880 <= bet_position[0] <= 935 and 185 <= bet_position[1] <= 265 and result_color == '16':
-            winning_bets.append(bet)        
-            
-            
-        elif 955 <= bet_position[0] <= 995 and 0 <= bet_position[1] <= 85 and result_color == '21':
+
+        elif 880 <= bet_position[0] <= 935 and 0 <= bet_position[1] <= 85 and closest_number == 18:
             winning_bets.append(bet)
-        elif 955 <= bet_position[0] <= 995 and 90 <= bet_position[1] <= 180 and result_color == '20':
+        elif 880 <= bet_position[0] <= 935 and 90 <= bet_position[1] <= 180 and closest_number == 17:
             winning_bets.append(bet)
-        elif 955 <= bet_position[0] <= 995 and 185 <= bet_position[1] <= 265 and result_color == '19':
-            winning_bets.append(bet)            
-            
-        elif 1020 <= bet_position[0] <= 1075 and 0 <= bet_position[1] <= 85 and result_color == '24':
+        elif 880 <= bet_position[0] <= 935 and 185 <= bet_position[1] <= 265 and closest_number == 16:
             winning_bets.append(bet)
-        elif 1020 <= bet_position[0] <= 1075 and 90 <= bet_position[1] <= 180 and result_color == '23':
+
+        elif 955 <= bet_position[0] <= 995 and 0 <= bet_position[1] <= 85 and closest_number == 21:
             winning_bets.append(bet)
-        elif 1020 <= bet_position[0] <= 1075 and 185 <= bet_position[1] <= 265 and result_color == '22':
-            winning_bets.append(bet)            
-            
-        elif 1080 <= bet_position[0] <= 1135 and 0 <= bet_position[1] <= 85 and result_color == '27':
+        elif 955 <= bet_position[0] <= 995 and 90 <= bet_position[1] <= 180 and closest_number == 20:
             winning_bets.append(bet)
-        elif 1080 <= bet_position[0] <= 1135 and 90 <= bet_position[1] <= 180 and result_color == '26':
+        elif 955 <= bet_position[0] <= 995 and 185 <= bet_position[1] <= 265 and closest_number == 19:
             winning_bets.append(bet)
-        elif 1080 <= bet_position[0] <= 1135 and 185 <= bet_position[1] <= 265 and result_color == '25':
-            winning_bets.append(bet)            
-       
-            
-        elif 1140 <= bet_position[0] <= 1200 and 0 <= bet_position[1] <= 85 and result_color == '30':
+
+        elif 1020 <= bet_position[0] <= 1075 and 0 <= bet_position[1] <= 85 and closest_number == 24:
             winning_bets.append(bet)
-        elif 1140 <= bet_position[0] <= 1200 and 90 <= bet_position[1] <= 180 and result_color == '29':
+        elif 1020 <= bet_position[0] <= 1075 and 90 <= bet_position[1] <= 180 and closest_number == 23:
             winning_bets.append(bet)
-        elif 1140 <= bet_position[0] <= 1200 and 185 <= bet_position[1] <= 265 and result_color == '28':
-            winning_bets.append(bet)       
-            
-        elif 1205 <= bet_position[0] <= 1260 and 0 <= bet_position[1] <= 85 and result_color == '33':
+        elif 1020 <= bet_position[0] <= 1075 and 185 <= bet_position[1] <= 265 and closest_number == 22:
             winning_bets.append(bet)
-        elif 1205 <= bet_position[0] <= 1260 and 90 <= bet_position[1] <= 180 and result_color == '32':
+
+        elif 1080 <= bet_position[0] <= 1135 and 0 <= bet_position[1] <= 85 and closest_number == 27:
             winning_bets.append(bet)
-        elif 1205 <= bet_position[0] <= 1260 and 185 <= bet_position[1] <= 265 and result_color == '31':
-            winning_bets.append(bet)       
-            
-        elif 1265 <= bet_position[0] <= 1325 and 0 <= bet_position[1] <= 85 and result_color == '36':
+        elif 1080 <= bet_position[0] <= 1135 and 90 <= bet_position[1] <= 180 and closest_number == 26:
             winning_bets.append(bet)
-        elif 1265 <= bet_position[0] <= 1325 and 90 <= bet_position[1] <= 180 and result_color == '35':
+        elif 1080 <= bet_position[0] <= 1135 and 185 <= bet_position[1] <= 265 and closest_number == 25:
             winning_bets.append(bet)
-        elif 1265 <= bet_position[0] <= 1325 and 185 <= bet_position[1] <= 265 and result_color == '34':
+
+        elif 1140 <= bet_position[0] <= 1200 and 0 <= bet_position[1] <= 85 and closest_number == 30:
+            winning_bets.append(bet)
+        elif 1140 <= bet_position[0] <= 1200 and 90 <= bet_position[1] <= 180 and closest_number == 29:
+            winning_bets.append(bet)
+        elif 1140 <= bet_position[0] <= 1200 and 185 <= bet_position[1] <= 265 and closest_number == 28:
+            winning_bets.append(bet)
+
+        elif 1205 <= bet_position[0] <= 1260 and 0 <= bet_position[1] <= 85 and closest_number == 33:
+            winning_bets.append(bet)
+        elif 1205 <= bet_position[0] <= 1260 and 90 <= bet_position[1] <= 180 and closest_number == 32:
+            winning_bets.append(bet)
+        elif 1205 <= bet_position[0] <= 1260 and 185 <= bet_position[1] <= 265 and closest_number == 31:
+            winning_bets.append(bet)
+
+        elif 1265 <= bet_position[0] <= 1325 and 0 <= bet_position[1] <= 85 and closest_number == 36:
+            winning_bets.append(bet)
+        elif 1265 <= bet_position[0] <= 1325 and 90 <= bet_position[1] <= 180 and closest_number == 35:
+            winning_bets.append(bet)
+        elif 1265 <= bet_position[0] <= 1325 and 185 <= bet_position[1] <= 265 and closest_number == 34:
             winning_bets.append(bet)
 
     if winning_bets:
-        result_message = f"You won {len(winning_bets) * 2} Chip(s)!"  # Double the win count
+        result_message = f"You won {len(winning_bets) * 2} Chip(s)!"  
         for bet in winning_bets:
-            new_chip = bet['chip'].copy()  # Duplicate winning chip
+            new_chip = bet['chip'].copy()  
             player_chips.append(new_chip)
-            player_chips.append(new_chip.copy())  # Add another copy for the win
+            player_chips.append(new_chip.copy())  
     else:
         result_message = "You lost!"
-    bets.clear()
-    
-blue_square_pos = (1325, 0)
+
+    bets.clear()  
 
 def update_yellow_square(result_number):
+    # відображення числа яке випало на рулетці
     bet_positions = {
         27: (620, 450), 10: (663, 450), 25: (705, 450), 29: (747, 450), 12: (789, 450),
         8: (831, 450), 19: (873, 450), 31: (915, 450), 18: (957, 450), 6: (999, 450),
@@ -285,7 +277,7 @@ while running:
         ball_speed *= 0.98
         if ball_speed < 0.1:
             ball_speed = 0
-            ball_stopped = True  # Ball has stopped
+            ball_stopped = True  
 
     rotated_circle_spin, rotated_circle_spin_rect = rotate_circle(circle_spin, circle_angle)
     ball_pos_x = ball_center_x + ball_distance_from_center * math.cos(ball_angle)
@@ -301,9 +293,7 @@ while running:
     closest_number = draw_numbers_on_wheel(math.radians(circle_angle), ball_pos_x, ball_pos_y)
     yellow_square_pos = update_yellow_square(closest_number)
     pygame.draw.rect(screen, (255, 255, 0), (*yellow_square_pos, 50, 50), 5)
-    pygame.draw.rect(screen, (0, 0, 255), (*blue_square_pos, 50, 50), 5)
 
-    # Check bets only when the ball has stopped
     if ball_stopped:
         check_bets(closest_number)
         ball_stopped = False
@@ -312,27 +302,24 @@ while running:
         result_text = result_font.render(result_message, True, (255, 255, 255))
         screen.blit(result_text, (600, 50))
 
-    # Draw player chips
     for chip in player_chips:
         chip_texture = pygame.image.load(f'img/roulet/{chip["color"]}.png')
         chip_texture = pygame.transform.scale(chip_texture, (50, 50))
         screen.blit(chip_texture, chip['pos'])
 
-    # Draw bets on the table
     for bet in bets:
         chip_texture = pygame.image.load(f'img/roulet/{bet["chip"]["color"]}.png')
         chip_texture = pygame.transform.scale(chip_texture, (50, 50))
         screen.blit(chip_texture, bet['position'])
 
-    # Draw Exit button in the bottom-right corner
+    # Exit button
     exit_button_width, exit_button_height = 70, 40
-    exit_button_x = screen_width - exit_button_width - 10  # 10 pixels from the right edge
-    exit_button_y = screen_height - exit_button_height - 10  # 10 pixels from the bottom edge
-    pygame.draw.rect(screen, (255, 0, 0), (exit_button_x, exit_button_y, exit_button_width, exit_button_height))  # Red rectangle for the Exit button
-    font = pygame.font.SysFont(None, 36)
+    exit_button_x = screen_width - exit_button_width - 10
+    exit_button_y = screen_height - exit_button_height - 10
+    pygame.draw.rect(screen, (255, 0, 0), (exit_button_x, exit_button_y, exit_button_width, exit_button_height))
     exit_text = font.render('EXIT', True, (255, 255, 255))
     screen.blit(exit_text, (exit_button_x + 5, exit_button_y + 5))
-    
+
     if pygame.mouse.get_pressed()[0]:
         mouse_pos = pygame.mouse.get_pos()
         if exit_button_x <= mouse_pos[0] <= exit_button_x + exit_button_width and exit_button_y <= mouse_pos[1] <= exit_button_y + exit_button_height:
