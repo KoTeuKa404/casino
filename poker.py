@@ -2,6 +2,7 @@ import pygame
 import random
 import sys
 import os
+from collections import Counter
 
 pygame.init()
 pygame.mixer.init()  
@@ -93,13 +94,46 @@ def create_button(x, y, w, h, text):
     text_surf = font.render(text, True, WHITE)
     screen.blit(text_surf, (x + w // 4, y + h // 4))
 
-def determine_winner(player_hand, ai_hand, community_cards):
-    player_score = sum([RANKS.index(card['rank']) for card in player_hand + community_cards])
-    ai_score = sum([RANKS.index(card['rank']) for card in ai_hand + community_cards])
+def get_hand_rank(hand):
     
-    if player_score > ai_score:
+    ranks = sorted([RANKS.index(card['rank']) for card in hand], reverse=True)
+    suits = [card['suit'] for card in hand]
+
+    rank_counts = Counter(ranks)
+    most_common_ranks = rank_counts.most_common()
+    
+    is_flush = len(set(suits)) == 1
+    is_straight = ranks == list(range(ranks[0], ranks[0] - 5, -1))
+
+    if is_flush and is_straight:
+        return (8, ranks)  #стріт-флеш
+    elif most_common_ranks[0][1] == 4:
+        return (7, ranks)  # Каре
+    elif most_common_ranks[0][1] == 3 and most_common_ranks[1][1] == 2:
+        return (6, ranks)  #фул хаус
+    elif is_flush:
+        return (5, ranks)  #флеш
+    elif is_straight:
+        return (4, ranks)  #стріт
+    elif most_common_ranks[0][1] == 3:
+        return (3, ranks)  #сет(три однакові)
+    elif most_common_ranks[0][1] == 2 and most_common_ranks[1][1] == 2:
+        return (2, ranks)  #ві пари
+    elif most_common_ranks[0][1] == 2:
+        return (1, ranks)  #пара
+    else:
+        return (0, ranks)  #старша карта
+
+def determine_winner(player_hand, ai_hand, community_cards):
+    player_full_hand = player_hand + community_cards
+    ai_full_hand = ai_hand + community_cards
+    
+    player_rank = get_hand_rank(player_full_hand)
+    ai_rank = get_hand_rank(ai_full_hand)
+    
+    if player_rank > ai_rank:
         return "Player Wins!"
-    elif ai_score > player_score:
+    elif ai_rank > player_rank:
         return "AI Wins!"
     else:
         return "It's a Draw!"
