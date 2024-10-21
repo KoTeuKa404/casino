@@ -259,3 +259,4 @@ def poker_game(screen_width, screen_height):
 if __name__ == "__main__":
     play_random_music()
     poker_game(1200, 700)  # Передаємо розмір вікна
+
