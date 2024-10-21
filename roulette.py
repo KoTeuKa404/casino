@@ -1,12 +1,15 @@
 import pygame
 import random
 import math
-
+import sys
+import os
 # Initialize Pygame
 pygame.init()
 
 # Set up the display
-screen = pygame.display.set_mode((1400, 800), pygame.RESIZABLE)
+screen_width = 1400
+screen_height = 800
+screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
 pygame.display.set_caption("Roulette Game")
 
 # Load assets
@@ -69,6 +72,20 @@ number_colors = {
 font = pygame.font.SysFont(None, 24)
 result_font = pygame.font.SysFont(None, 36)
 
+music_folder = "music/radio"  # Папка з музикою
+music_files = [os.path.join(music_folder, file) for file in os.listdir(music_folder) if file.endswith(".ogg")]
+
+def play_random_music(volume=0.5):
+    if music_files:
+        random_music = random.choice(music_files)
+        pygame.mixer.music.load(random_music)
+        pygame.mixer.music.set_volume(volume)
+        pygame.mixer.music.play()
+
+# Викликаємо цю функцію для початку гри
+play_random_music()
+play_random_music()
+
 def rotate_circle(image, angle):
     rotated_image = pygame.transform.rotate(image, angle)
     new_rect = rotated_image.get_rect(center=circle_rect.center)
@@ -93,7 +110,7 @@ def draw_numbers_on_wheel(angle_offset, ball_pos_x, ball_pos_y):
             closest_number = number
 
     return closest_number
-
+dragging_chip = None
 def handle_chip_dragging(mouse_x, mouse_y, event_type):
     global dragging_chip
     if event_type == pygame.MOUSEBUTTONDOWN:
@@ -243,90 +260,99 @@ def update_yellow_square(result_number):
     }
     return bet_positions.get(result_number, (100, 100))
 
-# Main game loop
-running = True
-clock = pygame.time.Clock()
-dragging_chip = None
+def roulette_game(screen_width, screen_height):
+    running = True
+    clock = pygame.time.Clock()
+    dragging_chip = None
+    spinning = False  # Ініціалізація змінної spinning
+    ball_speed = 0
+    circle_angle = 0  # Ініціалізація змінної circle_angle
+    ball_angle = 0  # Ініціалізація змінної ball_angle
+    ball_stopped = False  # Ініціалізація змінної ball_stopped
+    play_random_music()
 
-while running:
-    screen.fill(DARK_GREEN)
-    screen_width, screen_height = screen.get_size()
+    while running:
+        screen.fill(DARK_GREEN)
+        screen_width, screen_height = screen.get_size()
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        handle_chip_dragging(mouse_x, mouse_y, event.type)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            handle_chip_dragging(mouse_x, mouse_y, event.type)
 
-        if event.type == pygame.MOUSEBUTTONDOWN and not spinning:
-            if 180 <= event.pos[0] <= 260 and 180 <= event.pos[1] <= 260:
-                spin_speed = random.randint(5, 20)
-                spinning = True
-                ball_speed = 10
-                ball_stopped = False
+            if event.type == pygame.MOUSEBUTTONDOWN and not spinning:
+                if 180 <= event.pos[0] <= 260 and 180 <= event.pos[1] <= 260:
+                    spin_speed = random.randint(5, 20)
+                    spinning = True
+                    ball_speed = 10
+                    ball_stopped = False
 
-    if spinning:
-        circle_angle += spin_speed
-        ball_angle += ball_speed / ball_distance_from_center
-        spin_speed *= 0.99
-        if spin_speed < 0.5:
-            spinning = False
+        if spinning:
+            circle_angle += spin_speed
+            ball_angle += ball_speed / ball_distance_from_center
+            spin_speed *= 0.99
+            if spin_speed < 0.5:
+                spinning = False
 
-    if not spinning and ball_speed > 0:
-        ball_angle += ball_speed / ball_distance_from_center
-        ball_speed *= 0.98
-        if ball_speed < 0.1:
-            ball_speed = 0
-            ball_stopped = True  
+        if not spinning and ball_speed > 0:
+            ball_angle += ball_speed / ball_distance_from_center
+            ball_speed *= 0.98
+            if ball_speed < 0.1:
+                ball_speed = 0
+                ball_stopped = True  
 
-    rotated_circle_spin, rotated_circle_spin_rect = rotate_circle(circle_spin, circle_angle)
-    ball_pos_x = ball_center_x + ball_distance_from_center * math.cos(ball_angle)
-    ball_pos_y = ball_center_y + ball_distance_from_center * math.sin(ball_angle)
+        rotated_circle_spin, rotated_circle_spin_rect = rotate_circle(circle_spin, circle_angle)
+        ball_pos_x = ball_center_x + ball_distance_from_center * math.cos(ball_angle)
+        ball_pos_y = ball_center_y + ball_distance_from_center * math.sin(ball_angle)
 
-    screen.blit(inventory, table_rect)
-    screen.blit(pool, pool_rect)
-    screen.blit(circle_fix, circle_rect_fix)
-    screen.blit(pool_mini, mini_rect)
-    screen.blit(rotated_circle_spin, rotated_circle_spin_rect)
-    pygame.draw.circle(screen, (255, 255, 255), (int(ball_pos_x), int(ball_pos_y)), ball_radius)
+        screen.blit(inventory, table_rect)
+        screen.blit(pool, pool_rect)
+        screen.blit(circle_fix, circle_rect_fix)
+        screen.blit(pool_mini, mini_rect)
+        screen.blit(rotated_circle_spin, rotated_circle_spin_rect)
+        pygame.draw.circle(screen, (255, 255, 255), (int(ball_pos_x), int(ball_pos_y)), ball_radius)
 
-    closest_number = draw_numbers_on_wheel(math.radians(circle_angle), ball_pos_x, ball_pos_y)
-    yellow_square_pos = update_yellow_square(closest_number)
-    pygame.draw.rect(screen, (255, 255, 0), (*yellow_square_pos, 50, 50), 5)
+        closest_number = draw_numbers_on_wheel(math.radians(circle_angle), ball_pos_x, ball_pos_y)
+        yellow_square_pos = update_yellow_square(closest_number)
+        pygame.draw.rect(screen, (255, 255, 0), (*yellow_square_pos, 50, 50), 5)
 
-    if ball_stopped:
-        check_bets(closest_number)
-        ball_stopped = False
+        if ball_stopped:
+            check_bets(closest_number)
+            ball_stopped = False
 
-    if result_message:
-        result_text = result_font.render(result_message, True, (255, 255, 255))
-        screen.blit(result_text, (600, 50))
+        if result_message:
+            result_text = result_font.render(result_message, True, (255, 255, 255))
+            screen.blit(result_text, (600, 50))
 
-    for chip in player_chips:
-        chip_texture = pygame.image.load(f'img/roulet/{chip["color"]}.png')
-        chip_texture = pygame.transform.scale(chip_texture, (50, 50))
-        screen.blit(chip_texture, chip['pos'])
+        for chip in player_chips:
+            chip_texture = pygame.image.load(f'img/roulet/{chip["color"]}.png')
+            chip_texture = pygame.transform.scale(chip_texture, (50, 50))
+            screen.blit(chip_texture, chip['pos'])
 
-    for bet in bets:
-        chip_texture = pygame.image.load(f'img/roulet/{bet["chip"]["color"]}.png')
-        chip_texture = pygame.transform.scale(chip_texture, (50, 50))
-        screen.blit(chip_texture, bet['position'])
+        for bet in bets:
+            chip_texture = pygame.image.load(f'img/roulet/{bet["chip"]["color"]}.png')
+            chip_texture = pygame.transform.scale(chip_texture, (50, 50))
+            screen.blit(chip_texture, bet['position'])
 
-        # Draw Exit button in the bottom-right corner
-    exit_button_width, exit_button_height = 70, 40
-    exit_button_x = screen_width - exit_button_width - 10  # 10 pixels from the right edge
-    exit_button_y = screen_height - exit_button_height - 10  # 10 pixels from the bottom edge
-    pygame.draw.rect(screen, (255, 0, 0), (exit_button_x, exit_button_y, exit_button_width, exit_button_height))  # Red rectangle for the Exit button
-    font = pygame.font.SysFont(None, 36)
-    exit_text = font.render('EXIT', True, (255, 255, 255))
-    screen.blit(exit_text, (exit_button_x + 5, exit_button_y + 5))
+        exit_button_width, exit_button_height = 70, 40
+        exit_button_x = screen_width - exit_button_width - 10
+        exit_button_y = screen_height - exit_button_height - 10
+        pygame.draw.rect(screen, (255, 0, 0), (exit_button_x, exit_button_y, exit_button_width, exit_button_height))
+        font = pygame.font.SysFont(None, 36)
+        exit_text = font.render('EXIT', True, (255, 255, 255))
+        screen.blit(exit_text, (exit_button_x + 5, exit_button_y + 5))
 
-    if pygame.mouse.get_pressed()[0]:
-        mouse_pos = pygame.mouse.get_pos()
-        if exit_button_x <= mouse_pos[0] <= exit_button_x + exit_button_width and exit_button_y <= mouse_pos[1] <= exit_button_y + exit_button_height:
-            running = False
+        if pygame.mouse.get_pressed()[0]:
+            mouse_pos = pygame.mouse.get_pos()
+            if exit_button_x <= mouse_pos[0] <= exit_button_x + exit_button_width and exit_button_y <= mouse_pos[1] <= exit_button_y + exit_button_height:
+                running = False
 
-    pygame.display.flip()
-    clock.tick(60)
+        pygame.display.flip()
+        clock.tick(60)
 
-pygame.quit()
+    pygame.quit()
+
+if __name__ == "__main__":
+    play_random_music()
+    roulette_game(1400, 800)  # Передаємо розмір вікна
