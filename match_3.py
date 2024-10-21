@@ -117,18 +117,7 @@ def refill_grid(grid):
                 new_blocks.append((row, col))
     return new_blocks
 
-def animate_falling(grid, new_blocks):
-    start_x = (screen_width - (GRID_SIZE * TILE_SIZE)) // 2
-    start_y = ((screen_height - (GRID_SIZE * TILE_SIZE)) // 2) + 30
 
-    for row, col in new_blocks:
-        start_tile_y = start_y - TILE_SIZE  
-        for y in range(start_tile_y, start_y + row * TILE_SIZE, 10):
-            draw_background()
-            draw_grid(grid)
-            screen.blit(grid[row][col], (start_x + col * TILE_SIZE, y))
-            pygame.display.update()
-            pygame.time.delay(20)
 
 def animate_swap(grid, pos1, pos2):
     row1, col1 = pos1
@@ -187,7 +176,6 @@ def match_3_game():
                                     remove_matches(grid, matches)
                                     drop_tiles(grid)
                                     new_blocks = refill_grid(grid)
-                                    animate_falling(grid, new_blocks)
                                     matches = check_matches(grid)
                             else:
                                 animate_swap(grid, (row, col), selected_tile)
