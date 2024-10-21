@@ -145,7 +145,7 @@ def are_adjacent(pos1, pos2):
     row2, col2 = pos2
     return abs(row1 - row2) + abs(col1 - col2) == 1
 
-def match_3_game():
+def match_3_game(screen_width,screen_height):
     grid = create_grid()
     selected_tile = None
     running = True
