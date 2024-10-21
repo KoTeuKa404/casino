@@ -6,13 +6,15 @@ from collections import Counter
 
 pygame.init()
 pygame.mixer.init()  
-CARD_WIDTH, CARD_HEIGHT = 100, 150
+CARD_WIDTH, CARD_HEIGHT = 80, 135
 CARD_SPACING = 25
 WHITE = (255, 255, 255)
 BLUE = (0, 0, 255)
-GREEN = (0, 128, 0)
 BLACK = (0, 0, 0)
-table=pygame.image.load('img/card/PokerTable.png')
+
+# Завантажуємо фон столу
+table = pygame.image.load('img/card/PokerTable.png')
+
 screen_width = 1200
 screen_height = 700
 screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
@@ -66,21 +68,21 @@ def draw_card(card, x, y):
     screen.blit(scaled_card, (x, y))
 
 def draw_community_cards(cards):
-    community_card_y = screen_height // 2 - CARD_HEIGHT // 2
+    community_card_y = screen_height // 2 - CARD_HEIGHT // 2 - 60
     for i, card in enumerate(cards):
-        x_position = 450 + (CARD_WIDTH + CARD_SPACING + 20) * i
+        x_position = 263 + (CARD_WIDTH + CARD_SPACING + 22) * i +35
         draw_card(card, x_position, community_card_y)
 
 def draw_player_hands(hands):
-    player_hand_y = screen_height - CARD_HEIGHT - 150
+    player_hand_y = screen_height - CARD_HEIGHT - 175
     for i, card in enumerate(hands['Player']):
-        x_position = 100 + (CARD_WIDTH + CARD_SPACING + 20) * i
+        x_position = 471 + (CARD_WIDTH + CARD_SPACING + 55) * i
         draw_card(card, x_position, player_hand_y)
 
 def draw_ai_hands(ai_hand, reveal=False):
-    ai_hand_y = 100
+    ai_hand_y = 40
     for i, card in enumerate(ai_hand):
-        x_position = 100 + (CARD_WIDTH + CARD_SPACING + 20) * i
+        x_position = 472 + (CARD_WIDTH + CARD_SPACING + 55) * i
         if reveal:
             draw_card(card, x_position, ai_hand_y)
         else:
@@ -136,7 +138,7 @@ def determine_winner(player_hand, ai_hand, community_cards):
         return "It's a Draw!"
 
 def poker_game(screen_width, screen_height):
-    global player_chips, ai_chips, pot, current_bet, community_cards, hands, game_phase, screen, winner_text, bet_phase, raise_amount
+    global player_chips, ai_chips, pot, current_bet, community_cards, hands, game_phase, screen, winner_text, bet_phase, raise_amount, table
 
     screen = pygame.display.set_mode((screen_width, screen_height), pygame.RESIZABLE)
     pygame.display.set_caption("Poker Game 1-on-AI")
@@ -164,7 +166,7 @@ def poker_game(screen_width, screen_height):
                 mouse_x, mouse_y = pygame.mouse.get_pos()
 
                 # Bet
-                if 50 <= mouse_x <= 200 and screen_height - 100 <= mouse_y <= screen_height - 50:
+                if 210 <= mouse_x <= 360 and screen_height - 100 <= mouse_y <= screen_height - 50:
                     if player_chips >= big_blind and bet_phase == "initial":
                         current_bet = big_blind
                         player_chips -= current_bet
@@ -174,14 +176,14 @@ def poker_game(screen_width, screen_height):
                         call_phase = False
 
                 # Call
-                elif 250 <= mouse_x <= 400 and screen_height - 100 <= mouse_y <= screen_height - 50:
+                elif 410 <= mouse_x <= 560 and screen_height - 100 <= mouse_y <= screen_height - 50:
                     if player_chips >= current_bet:
                         player_chips -= current_bet
                         pot += current_bet
                         call_phase = True
 
                 # Raise
-                elif 450 <= mouse_x <= 600 and screen_height - 100 <= mouse_y <= screen_height - 50:
+                elif 610 <= mouse_x <= 760 and screen_height - 100 <= mouse_y <= screen_height - 50:
                     if player_chips >= current_bet + raise_amount:
                         pot += raise_amount
                         call_phase = False
@@ -191,7 +193,7 @@ def poker_game(screen_width, screen_height):
                             showdown = True
 
                 # Fold
-                elif 650 <= mouse_x <= 800 and screen_height - 100 <= mouse_y <= screen_height - 50:
+                elif 810 <= mouse_x <= 960 and screen_height - 100 <= mouse_y <= screen_height - 50:
                     ai_chips += pot
                     pot = 0
                     deck = create_deck()
@@ -203,7 +205,9 @@ def poker_game(screen_width, screen_height):
                     bet_phase = "initial"
                     call_phase = False
 
-        screen.fill(GREEN)
+        # Використовуємо фон столу замість зеленого кольору
+        screen.blit(pygame.transform.scale(table, (screen_width, screen_height)), (0, 0))
+        
         draw_player_hands(hands)
         draw_community_cards(community_cards[:num_community_cards])
 
@@ -238,10 +242,10 @@ def poker_game(screen_width, screen_height):
         else:
             draw_ai_hands(hands['AI'])
 
-        create_button(50, screen_height - 100, 150, 50, "Bet")
-        create_button(250, screen_height - 100, 150, 50, "Call")
-        create_button(450, screen_height - 100, 150, 50, "Raise")
-        create_button(650, screen_height - 100, 150, 50, "Fold")
+        create_button(210, screen_height - 100, 150, 50, "Bet")
+        create_button(410, screen_height - 100, 150, 50, "Call")
+        create_button(610, screen_height - 100, 150, 50, "Raise")
+        create_button(810, screen_height - 100, 150, 50, "Fold")
 
         text_surf = font.render(f"Player Chips: {player_chips}   Pot: {pot}   AI Chips: {ai_chips}", True, WHITE)
         screen.blit(text_surf, (screen_width // 2 - 300, 50))
