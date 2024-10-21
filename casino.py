@@ -23,7 +23,7 @@ font = pygame.font.Font(None, 36)
 
 background = pygame.image.load('img/background.png')  
 background = pygame.transform.scale(background, (screen_width, screen_height))   
-
+pygame.mixer.music.stop()
 def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
     text_rect = text_obj.get_rect()
@@ -58,6 +58,7 @@ class CasinoGame:
             # Poker Game
             if 195 + offset - 75 < mouse[0] < 195 + offset + 75 and 470 - 55 < mouse[1] < 470 + 55:
                 if click[0] == 1:
+                    pygame.mixer.music.stop()  # Зупинити музику перед запуском гри
                     self.running = False
                     poker_width, poker_height = 1200, 700  # Розмір вікна для покеру
                     pygame.display.set_mode((poker_width, poker_height), pygame.RESIZABLE)
@@ -67,6 +68,7 @@ class CasinoGame:
             # Roulette Game
             if 410 + offset - 75 < mouse[0] < 410 + offset + 75 and 470 - 55 < mouse[1] < 470 + 55:
                 if click[0] == 1:
+                    pygame.mixer.music.stop()  # Зупинити музику перед запуском гри
                     self.running = False
                     roulette_width, roulette_height = 1400, 800  # Розмір вікна для рулетки
                     pygame.display.set_mode((roulette_width, roulette_height), pygame.RESIZABLE)
@@ -76,6 +78,7 @@ class CasinoGame:
             # Slots Game
             if 310 + offset - 75 < mouse[0] < 310 + offset + 75 and 290 - 55 < mouse[1] < 290 + 55:
                 if click[0] == 1:
+                    pygame.mixer.music.stop()  # Зупинити музику перед запуском гри
                     self.running = False
                     slots_width, slots_height = 500, 600  # Розмір вікна для слотів
                     pygame.display.set_mode((slots_width, slots_height), pygame.RESIZABLE)
@@ -85,6 +88,7 @@ class CasinoGame:
             # Tiles Game (Mines)
             if 600 + offset - 75 < mouse[0] < 600 + offset + 75 and 485 - 55 < mouse[1] < 485 + 55:
                 if click[0] == 1:
+                    pygame.mixer.music.stop()  # Зупинити музику перед запуском гри
                     self.running = False
                     tiles_width, tiles_height = 600, 600  # Розмір вікна для гри Mines
                     pygame.display.set_mode((tiles_width, tiles_height), pygame.RESIZABLE)
@@ -94,8 +98,9 @@ class CasinoGame:
             # Match-3 Game
             if 505 + offset - 75 < mouse[0] < 505 + offset + 75 and 290 - 55 < mouse[1] < 290 + 55:
                 if click[0] == 1:
+                    pygame.mixer.music.stop()  # Зупинити музику перед запуском гри
                     self.running = False
-                    match_3_width, match_3_height = 1400, 800  # Розмір вікна для гри Match-3
+                    match_3_width, match_3_height = 1500, 780  # Розмір вікна для гри Match-3
                     pygame.display.set_mode((match_3_width, match_3_height), pygame.RESIZABLE)
                     match_3.match_3_game(match_3_width, match_3_height)
             draw_text("Match-3", font, WHITE, screen, 505 + offset, 290)
